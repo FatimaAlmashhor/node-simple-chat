@@ -3,205 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link rel="stylesheet" href="/css/main.css">
-    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
-        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat App</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="/js/script.js"></script>
 </head>
 
 <body>
-    <div class="container p-1 bg-gray-200">
-        <section class="text-gray-600 body-font mx-auto">
-            <div class="container px-5 py-24">
-                <div class="text-center mb-20">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font text-gray-900 mb-4">Enjoy Connection To your Frind</h1>
-                    <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500s">Here with one click we can find frind.</p>
-                    <div class="flex mt-6 justify-center">
-                        <div class="w-16 h-1 rounded-full bg-purple-500 inline-flex"></div>
-                    </div>
-                </div>
-                <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4 md:space-y-0 space-y-6 mx-auto">
-                    <div class=" shadow-sm hover:shadow-md cursor-pointer border-1 p-4 md:w-1/3 flex flex-col text-center items-center mx-1">
-                        <div
-                            class="w-20 h-20 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-500 mb-5 flex-shrink-0">
-                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-grow">
-                            <h2 class="text-gray-900 text-lg title-font font-medium mb-3">Room 1</h2>
-                            <p class="leading-relaxed text-base">Let chat about the programming.</p>
-                            <a href='/room' class="mt-3 text-purple-500 inline-flex items-center border-1  border-purple-600 curser-pointer" >join
-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                                    <path d="M5 12h14M12 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class=" shadow-sm hover:shadow-md cursor-pointer p-4 md:w-1/3 flex flex-col text-center items-center mx-1">
-                        <div
-                            class="w-20 h-20 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-500 mb-5 flex-shrink-0">
-                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-grow">
-                            <h2 class="text-gray-900 text-lg title-font font-medium mb-3">Room 1</h2>
-                            <p class="leading-relaxed text-base">Let chat about the programming.</p>
-                            <a class="mt-3 text-purple-500 inline-flex items-center border-1  border-purple-600 curser-pointer" >join
-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-                                    <path d="M5 12h14M12 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                   
-                </div>
-                <button
-                    class="flex mx-auto mt-16 text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg">More</button>
+    <div id="room-container">
+        <% Object.keys(rooms).forEach(room=> { %>
+            <div>
+                <%= room %>
             </div>
-        </section>
+            <a href="/<%= room %>">Join</a>
+            <% }) %>
     </div>
-    <!-- <div class="center">
-        <div class="contacts">
-            <i class="fas fa-bars fa-2x"></i>
-            <h2>
-                Contacts
-            </h2>
-            <div class="contact">
-                <div class="pic rogers"></div>
-                <div class="badge">
-                    14
-                </div>
-                <div class="name">
-                    Steve Rogers
-                </div>
-                <div class="message">
-                    That is America's ass 🇺🇸🍑
-                </div>
-            </div>
-            <div class="contact">
-                <div class="pic stark"></div>
-                <div class="name">
-                    Tony Stark
-                </div>
-                <div class="message">
-                    Uh, he's from space, he came here to steal a necklace from a wizard.
-                </div>
-            </div>
-            <div class="contact">
-                <div class="pic banner"></div>
-                <div class="badge">
-                    1
-                </div>
-                <div class="name">
-                    Bruce Banner
-                </div>
-                <div class="message">
-                    There's an Ant-Man *and* a Spider-Man?
-                </div>
-            </div>
-            <div class="contact">
-                <div class="pic thor"></div>
-                <div class="name">
-                    Thor Odinson
-                </div>
-                <div class="badge">
-                    3
-                </div>
-                <div class="message">
-                    I like this one
-                </div>
-            </div>
-            <div class="contact">
-                <div class="pic danvers"></div>
-                <div class="badge">
-                    2
-                </div>
-                <div class="name">
-                    Carol Danvers
-                </div>
-                <div class="message">
-                    Hey Peter Parker, you got something for me?
-                </div>
-            </div>
-        </div>
-        <div class="chat ">
-            <div class="contact bar" >
-                <div class="pic stark"></div>
-                <div class="name">
-                    Tony Stark
-                </div>
-                <div class="seen">
-                    Today at 12:56
-                </div>
-            </div>
-            <div class="messages hidden" id="chat" >
-                <div class="time">
-                    Today at 11:41
-                </div>
-                <div class="message parker">
-                    Hey, man! What's up, Mr Stark? 👋
-                </div>
-                <div class="message stark">
-                    Kid, where'd you come from?
-                </div>
-                <div class="message parker">
-                    Field trip! 🤣
-                </div>
-                <div class="message parker">
-                    Uh, what is this guy's problem, Mr. Stark? 🤔
-                </div>
-                <div class="message stark">
-                    Uh, he's from space, he came here to steal a necklace from a wizard.
-                </div>
-                <div class="message stark">
-                    <div class="typing typing-1"></div>
-                    <div class="typing typing-2"></div>
-                    <div class="typing typing-3"></div>
-                </div>
-            </div>
-            <div class="input">
-                <i class="fas fa-camera"></i><i class="far fa-laugh-beam"></i><input
-                    placeholder="Type your message here!" type="text" /><i class="fas fa-microphone"></i>
-            </div>
-        </div>
-    </div> -->
-    <!-- <lable>Chat</lable>
-    <input type="text" id='inputText' placeholder="Write somthing" />
-    <br /> -->
-
-    <!-- <div id="chart">
-    </div>
-    <button type="submit" value="Click" id="submit">Send</button> -->
-    <script>
-        const appSocket = io('http://localhost:5000')
-        // import io from '/socket.io'
-        var chat = document.getElementById('chat');
-        chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-        const btn = document.querySelector('#submit')
-        const text = document.querySelector('#inputText')
-        const chart = document.querySelector('#chart')
-        btn.addEventListener('click', (e) => {
-            chart.innerHTML += ('<p>' + text.value + '</p>')
-            appSocket.emit('message', text.value)
-            chart.value = ''
-        })
-        appSocket.on('message', (value) => {
-            console.log({ value });
-            chart.innerHTML += '<p>' + value + '</p>'
-        })
-
-        appSocket.on('connection')
-    </script>
+    <form action="/room" method="POST">
+        <input name="room" type="text" required>
+        <button type="submit">New Room</button>
+    </form>
 </body>
 
 </html>

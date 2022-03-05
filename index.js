@@ -1,40 +1,61 @@
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app)
-const io = require('socket.io')(server, { core: { origin: '*' } });
+const express = require('express')
+const app = express()
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
 
+app.set('views', './views')
 app.set('view engine', 'ejs')
-app.use(express.static('./public/'))
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
 
-// make rooms
-// make the use inter 
-// make the user inter its name 
-// one session of the room 
-// multi messages 
-// leave the room and logout 
+const rooms = {}
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('index', { rooms: rooms })
 })
 
-app.get('/room', (req, res) => {
-    console.log();
-    res.render('chartRoom')
+app.post('/room', (req, res) => {
+    if (rooms[req.body.room] != null) {
+        return res.redirect('/')
+    }
+    rooms[req.body.room] = { users: {} }
+    res.redirect(req.body.room)
+    // Send message that new room was created
+    console.log('[rooms]', rooms);
+    io.emit('room-created', req.body.room)
 })
 
+app.get('/:room', (req, res) => {
+    if (rooms[req.params.room] == null) {
+        return res.redirect('/')
+    }
+    res.render('room', { roomName: req.params.room })
+})
 
-server.listen(process.env.PORT || 5000)
+server.listen(3000)
 
-io.on('connection', (s) => {
-    console.log('connection', s.id);
-
-    //reseve message
-    s.on('message', (value) => {
-        console.log(value);
-        //send
-        s.broadcast.emit('message', value)
+io.on('connection', socket => {
+    socket.on('new-user', (room, name) => {
+        socket.join(room)
+        rooms[room].users[socket.id] = name
+        console.log('[users]', rooms[room].users);
+        socket.broadcast.to(room).emit('user-connected', name)
+        io.to(room).emit('show-users', rooms[room].users);
     })
-
-
-
+    socket.on('send-chat-message', (room, message) => {
+        socket.to(room).emit('chat-message', { message: message, name: rooms[room].users[socket.id] })
+    })
+    socket.on('disconnect', () => {
+        getUserRooms(socket).forEach(room => {
+            socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
+            delete rooms[room].users[socket.id]
+        })
+    })
 })
+
+function getUserRooms(socket) {
+    return Object.entries(rooms).reduce((names, [name, room]) => {
+        if (room.users[socket.id] != null) names.push(name)
+        return names
+    }, [])
+}
